@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fortalecimiento del dólar global</title>
+<style>
+:root{--bg:#fff;--ink:#000;--muted:#555;--red:#d0021b;--pos:#e58a93;--neg:#111;--ref:#9a9a9a;--lw:50px;color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 40px}
+h1{margin:0 0 6px;padding-top:12px;border-top:5px solid var(--red);font:700 28px/1.15 Georgia,"Times New Roman",serif}
+.sub{margin:0 0 16px;color:var(--muted);font-size:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+.tabs{display:flex;border-bottom:1px solid #ccc;margin-bottom:16px}
+.tab{background:none;border:0;border-bottom:4px solid transparent;padding:10px 14px;font-weight:700;font-size:15px;margin-bottom:-1px}
+.tab[aria-pressed=true]{border-bottom-color:var(--red)}
+.card{border-left:5px solid var(--red);background:#f6f6f6;padding:12px 14px;margin-bottom:16px;min-height:88px}
+.card .n{font-size:14px;font-weight:700;margin-bottom:2px}
+.card b{display:block;font:700 30px Georgia,serif;line-height:1.1}
+.card span{font-size:13px;color:var(--muted)}
+.ctl{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:14px}
+.grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.grp small{font-size:12px;color:var(--muted);margin-right:2px}
+.pill{background:#fff;border:1px solid #000;border-radius:999px;padding:4px 12px;font-size:13px}
+.pill[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+.plot{position:relative;padding-bottom:24px}
+.hd{position:relative;height:20px;margin-left:var(--lw);font-size:12px;color:var(--muted)}
+.hd span{position:absolute;top:0;white-space:nowrap}
+.gls{position:absolute;left:var(--lw);right:0;top:20px;bottom:24px;pointer-events:none}
+.gl{position:absolute;top:0;bottom:0;width:1px;background:#e2e2e2}
+.gl.z{background:#000}
+.tk{position:absolute;bottom:0;transform:translateX(-50%);font-size:12px;color:var(--muted)}
+.r{display:grid;grid-template-columns:var(--lw) 1fr;align-items:center;width:100%;background:none;border:0;padding:3px 0;text-align:left;position:relative}
+.r:hover,.r:focus-visible{background:rgba(0,0,0,.04);outline:none}
+.cd{font-size:13px;font-weight:700}
+.tr{position:relative;height:22px}
+.bar{position:absolute;top:0;height:100%;background:var(--pos);transform:scaleX(0);transition:transform .6s cubic-bezier(.2,.7,.2,1),background .15s}
+.bar.p{transform-origin:left}.bar.q{transform-origin:right;background:var(--neg)}.bar.f{background:var(--ref)}
+.go .bar{transform:scaleX(1)}
+.r.on .bar{background:var(--red)}
+.v{position:absolute;top:3px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ref{border-top:1px dashed #bbb;margin-top:6px;padding-top:6px}
+.note{font-size:13px;color:var(--muted);margin:14px 0 0;line-height:1.5}
+.note b{color:var(--ink)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fc{border-top:3px solid #000;padding:10px 2px 6px}
+.fc b{display:block;font:700 26px/1.1 Georgia,serif;color:var(--red)}
+.fc h3{margin:6px 0 4px;font-size:14px}
+.fc p{margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
+.src{margin-top:20px;padding-top:10px;border-top:1px solid #ddd;font-size:12px;color:var(--muted)}
+@media (max-width:560px){.cards{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.bar{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Fortalecimiento del dólar global</h1>
+  <p class="sub">Monedas seleccionadas frente al dólar en septiembre (var. % mensual)</p>
+  <div id="app"></div>
+  <div class="src">Fuente: LSEG Workspace, elaborado por Grupo Cibest.</div>
+</div>
+<script>
+(function(){
+var D=[["MXN","Peso mexicano",6.4,"la"],["SEK","Corona sueca",4.5,"ot"],["CLP","Peso chileno",4.1,"la"],["CHF","Franco suizo",3.4,"ot"],["CAD","Dólar canadiense",2.7,"ot"],["EUR","Euro",2.5,"ot"],["COP","Peso colombiano",2.2,"la"],["GBP","Libra esterlina",2.1,"ot"],["PEN","Sol peruano",2.0,"la"],["BRL","Real brasileño",-0.2,"la"],["JPY","Yen japonés",-1.5,"ot"]]
+ .map(x=>({c:x[0],n:x[1],v:x[2],g:x[3]}));
+var DXY={c:"DXY",n:"Índice del dólar",v:-2.0,g:"ref"};
+var ALL=D.concat([DXY]),RANK=D.slice().sort((a,b)=>b.v-a.v).map(x=>x.c);
+var FACTS=[
+ ["3,75 % – 4,00 %","Tasa de política de la Fed","Aumentó 25 pb en la reunión del 16 de septiembre. La decisión fue unánime."],
+ ["Meta: 2,0 %","Inflación en EE. UU.","Se mantiene muy por encima de la meta por el conflicto en Medio Oriente."],
+ ["58,4","PMI compuesto de septiembre","Fue el resultado más fuerte desde julio de 2021."],
+ ["2,1 % → 2,5 %","PIB del 1T26 (SAAR)","Fue revisado al alza."],
+ ["1,5 % → 2,2 %","PIB del 2T26 (SAAR)","Fue revisado al alza."],
+ ["> 70 %","Probabilidad de otro alza de 25 pb en octubre","Subió por encima del 70 % el mes pasado."],
+ ["2,0 %","Fortalecimiento del DXY en el mes","La depreciación de la mayoría de monedas respondió a este movimiento."]
+];
+var MIN=-4,MAX=8,TICKS=[-2,0,2,4,6],Z=(0-MIN)/(MAX-MIN)*100;
+var S={tab:"fx",sort:"desc",grp:"all",sel:"COP"};
+var f=n=>n.toFixed(1).replace(".",","),pos=x=>(x-MIN)/(MAX-MIN)*100;
+var app=document.getElementById("app");
+var SORTS=[["desc","Mayor a menor"],["asc","Menor a mayor"],["az","A–Z"]],GRPS=[["all","Todas"],["la","Latinoamérica"],["ot","Otras"]];
+var pills=(k,list)=>list.map(p=>'<button class="pill" data-k="'+k+'" data-v="'+p[0]+'" aria-pressed="'+(S[k]===p[0])+'">'+p[1]+"</button>").join(" ");
+var tab=(v,l)=>'<button class="tab" data-k="tab" data-v="'+v+'" aria-pressed="'+(S.tab===v)+'">'+l+"</button>";
+function detail(c){
+  var x=ALL.find(d=>d.c===c),t;
+  if(x.g==="ref")t="Referencia: la fuente lo describe como un fortalecimiento del dólar de 2,0 % en el mes.";
+  else t=(x.v>0?"Se depreció":"Se apreció")+" "+f(Math.abs(x.v))+" % frente al dólar · puesto "+(RANK.indexOf(c)+1)+" de "+D.length+" en depreciación";
+  return '<div class="n">'+x.c+" · "+x.n+"</div><b>"+(x.v>0?"+":"")+f(x.v)+" %</b><span>"+t+"</span>";
+}
+function row(d){
+  var neg=d.v<0,l=pos(Math.min(0,d.v)),w=Math.abs(d.v)/(MAX-MIN)*100;
+  var vs=neg?"right:"+(100-pos(d.v)+1)+"%":"left:"+(pos(d.v)+1)+"%";
+  return '<button class="r'+(d.c===S.sel?" on":"")+(d.g==="ref"?" ref":"")+'" data-c="'+d.c+'"><span class="cd">'+d.c+'</span><span class="tr"><span class="bar '+(neg?"q":"p")+(d.g==="ref"?" f":"")+'" style="left:'+l+"%;width:"+w+'%"></span><span class="v" style="'+vs+'">'+f(d.v)+"</span></span></button>";
+}
+function fx(){
+  var a=D.filter(d=>S.grp==="all"||d.g===S.grp);
+  a.sort((p,q)=>S.sort==="asc"?p.v-q.v:S.sort==="az"?p.c.localeCompare(q.c):q.v-p.v);
+  var up=D.filter(d=>d.v>0).length,dn=D.length-up;
+  var h='<div class="card" id="card" role="status">'+detail(S.sel)+"</div>";
+  h+='<div class="ctl"><div class="grp"><small>Orden</small>'+pills("sort",SORTS)+'</div><div class="grp"><small>Región</small>'+pills("grp",GRPS)+"</div></div>";
+  h+='<div class="plot" id="plot"><div class="hd"><span style="right:calc(100% - '+Z+'%);padding-right:6px">← Apreciación</span><span style="left:'+Z+'%;padding-left:6px">Depreciación →</span></div><div class="gls">';
+  TICKS.forEach(t=>{h+='<div class="gl'+(t===0?" z":"")+'" style="left:'+pos(t)+'%"></div><span class="tk" style="left:'+pos(t)+'%">'+String(t).replace("-","−")+"</span>"});
+  h+="</div>"+a.map(row).join("")+row(DXY)+"</div>";
+  h+='<p class="note"><b>'+up+" de "+D.length+" monedas</b> se depreciaron frente al dólar; solo "+D.filter(d=>d.v<0).map(d=>d.c).join(" y ")+" se apreciaron. La mayor depreciación fue la de <b>"+RANK[0]+"</b> ("+f(D[0].v)+" %). El DXY es el índice del dólar: en la fuente aparece con "+f(DXY.v)+" %.</p>";
+  return h;
+}
+function ctx(){
+  return '<div class="cards">'+FACTS.map(x=>'<div class="fc"><b>'+x[0]+"</b><h3>"+x[1]+"</h3><p>"+x[2]+"</p></div>").join("")+"</div>";
+}
+function render(){
+  var fk=document.activeElement&&document.activeElement.dataset?document.activeElement.dataset.v:null,fg=document.activeElement&&document.activeElement.dataset?document.activeElement.dataset.k:null;
+  app.innerHTML='<div class="tabs">'+tab("fx","Monedas")+tab("ctx","Contexto")+"</div>"+(S.tab==="fx"?fx():ctx());
+  var p=document.getElementById("plot");
+  if(p)requestAnimationFrame(()=>requestAnimationFrame(()=>p.classList.add("go")));
+  if(fk&&fg){var el=app.querySelector('[data-k="'+fg+'"][data-v="'+fk+'"]');if(el)el.focus()}
+}
+function show(c){var el=document.getElementById("card");if(el)el.innerHTML=detail(c)}
+app.addEventListener("click",e=>{
+  var b=e.target.closest("[data-k]");
+  if(b){S[b.dataset.k]=b.dataset.v;render();return}
+  var r=e.target.closest(".r");
+  if(r){S.sel=r.dataset.c;app.querySelectorAll(".r").forEach(x=>x.classList.toggle("on",x===r));show(S.sel)}
+});
+function hov(e){var r=e.target.closest(".r");if(r)show(r.dataset.c)}
+app.addEventListener("mouseover",hov);app.addEventListener("focusin",hov);
+app.addEventListener("mouseleave",()=>show(S.sel));
+render();
+})();
+</script>
+</body>
+</html>
